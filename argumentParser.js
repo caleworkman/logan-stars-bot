@@ -1,4 +1,4 @@
-function parseArgs(argArray) {
+function parseArgs(argArray, username) {
     // Return a json object for the command and any parameters
     // The '!stars' command will already be removed from argArray
 
@@ -23,12 +23,18 @@ function parseArgs(argArray) {
             isLoserboard: command === "loserboard"
         }
 
-    } else {
+    } else if (args.length === 1) {
         // One argument is assumed to be a name
         return { 
             command: "query", 
             username: command 
         };
+    } else {
+        // No arguments, query your own username
+        return {
+            command: "query",
+            username: username
+        }
     }
 
 }

@@ -52,7 +52,7 @@ async function getUserStarCount(username) {
     }
 }
 
-async function giveStars(username, quantityString) {
+async function giveStars(username, quantityString=1) {
     try {
         const quantity = parseInt(quantityString);
         const params = {
@@ -87,7 +87,7 @@ async function setStarCount(username, quantityString) {
     }
 }
 
-async function takeStars(username, quantityString) {
+async function takeStars(username, quantityString=1) {
     try {
         if (quantityString === "all") {
             return await setStarCount(username, 0);

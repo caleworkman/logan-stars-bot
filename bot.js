@@ -37,10 +37,12 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 
     if (message.startsWith("!stars")) {
 
+        console.log(user, userID);
+
         var args = message.split(" ");
         args.shift();   
 
-        args = parseArgs(args);
+        args = parseArgs(args, user);
 
         const username = args.username;
         const quantity = args.quantity;
