@@ -10,37 +10,55 @@ AWS.config.update({
 // Create the service used to connect to DynamoDB
 const docClient = new AWS.DynamoDB.DocumentClient();
 
-const params = {
-    TableName: 'logan-stars-bot',
-}
+const tableName = 'logan-stars-bot';
 
 async function getUserStarCount(username) {
     try {
-        params['Key'] = {
-            'id': username
+        const params = {
+            TableName: tableName,
+            Key: { id: username }
         }
-        var result = await docClient.get(params).promise()
-        console.log(JSON.stringify(result))
+
+        var result = await docClient.get(params).promise();
         return result.Item.quantity;
     } catch (error) {
         console.error(error);
     }
 }
 
-function setStarCount(username, quantity) {
-
-    params['Item'] = {
-        id: username,
-        quantity: quantity
+async function giveStars(username, quantityString) {
+    try {
+        const quantity = parseInt(quantityString);
+        const params = {
+            TableName: tableName,
+            Key: { id: username },
+            UpdateExpression: "SET quantity = quantity + :num",
+            ConditionExpression: "attribute_exists(quantity)",
+            ExpressionAttributeValues: { ":num": quantity }
+        }
+        return await docClient.update(params).promise();
+    } catch (error) {
+        console.error(error);
     }
+}
 
-    return docClient.put(params, error => {
-        if (!error) return { successful: true }
-        else return { successful: false, error: error }
-    });
+async function setStarCount(username, quantity) {
+    try {
+        const params = {
+            TableName: tableName,
+            Item: {
+                id: username,
+                quantity: quantity
+            }
+        }
+        return await docClient.put(params).promise();
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 module.exports = {
     getUserStarCount,
+    giveStars,
     setStarCount,
 }

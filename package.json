@@ -9,5 +9,9 @@
         "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
         "dotenv": "^16.0.0",
         "winston": "^3.6.0"
+    },
+    "scripts": {
+        "start": "nodemon bot.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
     }
 }
