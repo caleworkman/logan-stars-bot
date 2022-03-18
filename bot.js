@@ -30,14 +30,17 @@ function sendStarCountMessage(channelId, username, num) {
     })
 }
 
+// Protect some functions
+const zeserothId = '257311791099412491';
+const myId = '228727476589690881';
+const permittedUsers = [myId, zeserothId];
+
 bot.on('message', function (user, userID, channelID, message, evt) {
 
     // Our bot needs to know if it will execute a command
     // It will listen for messages that will start with `!stars`
 
     if (message.startsWith("!stars")) {
-
-        console.log(user, userID);
 
         var args = message.split(" ");
         args.shift();   
@@ -50,18 +53,21 @@ bot.on('message', function (user, userID, channelID, message, evt) {
         switch(args.command) {
 
             case "give":
+                if (!permittedUsers.includes(userID)) break;
                 giveStars(username, quantity).then(
                     numStars => sendStarCountMessage(channelID, username, numStars)
                 );
                 break;
 
             case "set":
+                if (!permittedUsers.includes(userID)) break;
                 setStarCount(username, quantity).then(
                     numStars => sendStarCountMessage(channelID, username, numStars)
                 )
                 break;
 
             case "take":
+                if (!permittedUsers.includes(userID)) break;
                 takeStars(username, quantity).then(
                     numStars => sendStarCountMessage(channelID, username, numStars)
                 )
