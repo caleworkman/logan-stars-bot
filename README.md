@@ -1,4 +1,4 @@
 # logan-stars-bot
 Discord bot
 
-`node bot.js`
+`npm run dev`
