@@ -20,9 +20,15 @@ async function getUserStarCount(username) {
         }
 
         var result = await docClient.get(params).promise();
+
+        if (Object.keys(result).length === 0) {
+            // Username does not exist in DB
+            return setStarCount(username, 0);
+        }
+
         return result.Item.quantity;
     } catch (error) {
-        console.error(error);
+        return handleError(error, username, 0);
     }
 }
 
@@ -40,7 +46,7 @@ async function giveStars(username, quantityString) {
         const result = await docClient.update(params).promise();
         return result.Attributes.quantity;
     } catch (error) {
-        console.error(error);
+        return handleError(error, username, parseInt(quantityString));
     }
 }
 
@@ -57,7 +63,7 @@ async function setStarCount(username, quantityString) {
         await docClient.put(params).promise();
         return quantity;
     } catch (error) {
-        console.error(error);
+        return handleError(error, username, parseInt(quantityString));
     }
 }
 
@@ -83,7 +89,16 @@ async function takeStars(username, quantityString) {
         const result = await docClient.update(params).promise();
         return result.Attributes.quantity;
     } catch (error) {
-        console.error(error);
+        return handleError(error, username, 0);
+    }
+}
+
+function handleError(error, username, quantity) {
+    if (error.code === "ConditionalCheckFailedException") {
+        // assume the username doesn't exist in the database
+        return setStarCount(username, quantity);
+    } else {
+        console.error(error)
     }
 }
 

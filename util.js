@@ -28,9 +28,9 @@ function repeatStars(num) {
 
     const starString = star_1000.repeat(n_1000) + star_100.repeat(n_100) + star_10.repeat(n_10) + star.repeat(remainder);
 
-    if (starString.length > 2000) {
-        // Max discord message limit is 2000 characters
-        return star_1000 + "\:sunglasses:";
+    if (starString.length > 1900) {
+        // Max discord message limit is 2000 characters, left extra space for username and star count string
+        return `Wow much ${star_1000} \:sunglasses:`;
     }
     return starString;
 }

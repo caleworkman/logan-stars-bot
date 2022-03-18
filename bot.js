@@ -33,7 +33,7 @@ function sendStarCountMessage(channelId, username, num) {
 bot.on('message', function (user, userID, channelID, message, evt) {
 
     // Our bot needs to know if it will execute a command
-    // It will listen for messages that will start with `!loganstars`
+    // It will listen for messages that will start with `!stars`
 
     if (message.startsWith("!stars")) {
 
@@ -42,29 +42,32 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 
         args = parseArgs(args);
 
+        const username = args.username;
+        const quantity = args.quantity;
+
         switch(args.command) {
 
             case "give":
-                giveStars(args.username, args.quantity).then(
-                    numStars => sendStarCountMessage(channelID, args.username, numStars)
+                giveStars(username, quantity).then(
+                    numStars => sendStarCountMessage(channelID, username, numStars)
                 );
                 break;
 
             case "set":
-                setStarCount(args.username, args.quantity).then(
-                    numStars => sendStarCountMessage(channelID, args.username, numStars)
+                setStarCount(username, quantity).then(
+                    numStars => sendStarCountMessage(channelID, username, numStars)
                 )
                 break;
 
             case "take":
-                takeStars(args.username, args.quantity).then(
-                    numStars => sendStarCountMessage(channelID, args.username, numStars)
+                takeStars(username, quantity).then(
+                    numStars => sendStarCountMessage(channelID, username, numStars)
                 )
                 break;
 
             case "query":
-                getUserStarCount(args.username).then(
-                    numStars => sendStarCountMessage(channelID, args.username, numStars)
+                getUserStarCount(username).then(
+                    numStars => sendStarCountMessage(channelID, username, numStars)
                 );
                 break;
         }
