@@ -42,7 +42,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
         var args = message.split(" ");
         args.shift();   
 
-        args = parseArgs(args, user);
+        args = parseArgs(args, user.toLowerCase());
 
         const username = args.username;
         const quantity = args.quantity;
