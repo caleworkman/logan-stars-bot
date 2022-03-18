@@ -1,7 +1,7 @@
 require('dotenv').config();
 
-const { capitalize, pluralize, repeatStars } = require('./util.js');
-const { getUserStarCount, giveStars, setStarCount, takeStars } = require('./aws-helper.js');
+const { capitalize, makeUserString } = require('./util.js');
+const { getLeaderboard, getUserStarCount, giveStars, setStarCount, takeStars } = require('./aws-helper.js');
 const { parseArgs } = require('./argumentParser.js');
 
 var Discord = require('discord.io');
@@ -26,7 +26,7 @@ bot.on('ready', function (evt) { logger.info('Connected'); });
 function sendStarCountMessage(channelId, username, num) {
     bot.sendMessage({
         to: channelId,
-        message: `${capitalize(username)}: ${repeatStars(num)} (${num})`
+        message: makeUserString(username, num)
     })
 }
 
@@ -68,6 +68,19 @@ bot.on('message', function (user, userID, channelID, message, evt) {
             case "query":
                 getUserStarCount(username).then(
                     numStars => sendStarCountMessage(channelID, username, numStars)
+                );
+                break;
+
+            case "loserboard":
+            case "leaderboard":
+                getLeaderboard(args.numUsers, args.isLoserboard).then(
+                    users => {
+                        const userStrings = users.map(u => makeUserString(u.id, u.quantity));
+                        bot.sendMessage({
+                            to: channelID,
+                            message: userStrings.join("\n")
+                        });
+                    }
                 );
                 break;
         }

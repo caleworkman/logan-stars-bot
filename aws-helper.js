@@ -12,6 +12,26 @@ const docClient = new AWS.DynamoDB.DocumentClient();
 
 const tableName = 'logan-stars-bot';
 
+async function getLeaderboard(numString, isLoserboard=False) {
+    try {
+        const params = {
+            TableName: tableName,
+        }
+
+        var result = await docClient.scan(params).promise();
+        const users = result.Items;
+        users.sort((a, b) => {
+            if (isLoserboard) return a.quantity - b.quantity;
+            return b.quantity - a.quantity
+        });
+
+        const numUsers = (numString === "all") ? users.length : parseInt(numString);
+        return users.slice(0, numUsers);;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 async function getUserStarCount(username) {
     try {
         const params = {
@@ -63,7 +83,7 @@ async function setStarCount(username, quantityString) {
         await docClient.put(params).promise();
         return quantity;
     } catch (error) {
-        return handleError(error, username, parseInt(quantityString));
+        console.log(error);
     }
 }
 
@@ -103,6 +123,7 @@ function handleError(error, username, quantity) {
 }
 
 module.exports = {
+    getLeaderboard,
     getUserStarCount,
     giveStars,
     setStarCount,

@@ -35,8 +35,13 @@ function repeatStars(num) {
     return starString;
 }
 
+function makeUserString(username, numStars) {
+    return `**${capitalize(username)}**: ${repeatStars(numStars)} (${numStars})`
+}
+
 module.exports = {
     capitalize,
+    makeUserString,
     pluralize,
     repeatStars
 };
