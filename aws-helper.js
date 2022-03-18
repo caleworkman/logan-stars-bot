@@ -43,7 +43,7 @@ async function getUserStarCount(username) {
 
         if (Object.keys(result).length === 0) {
             // Username does not exist in DB
-            return setStarCount(username, 0);
+            return setStarCount(username, 3);
         }
 
         return result.Item.quantity;
