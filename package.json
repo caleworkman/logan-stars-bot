@@ -1,0 +1,13 @@
+{
+    "name": "logan-stars-bot",
+    "version": "1.0.0",
+    "description": "How many Logan Bucks for a Logan Star?",
+    "main": "bot.js",
+    "author": "Mardoosa",
+    "dependencies": {
+        "aws-sdk": "^2.1095.0",
+        "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
+        "dotenv": "^16.0.0",
+        "winston": "^3.6.0"
+    }
+}
