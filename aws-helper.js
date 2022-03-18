@@ -34,16 +34,19 @@ async function giveStars(username, quantityString) {
             Key: { id: username },
             UpdateExpression: "SET quantity = quantity + :num",
             ConditionExpression: "attribute_exists(quantity)",
-            ExpressionAttributeValues: { ":num": quantity }
+            ExpressionAttributeValues: { ":num": quantity },
+            ReturnValues: "ALL_NEW"
         }
-        return await docClient.update(params).promise();
+        const result = await docClient.update(params).promise();
+        return result.Attributes.quantity;
     } catch (error) {
         console.error(error);
     }
 }
 
-async function setStarCount(username, quantity) {
+async function setStarCount(username, quantityString) {
     try {
+        const quantity = parseInt(quantityString);
         const params = {
             TableName: tableName,
             Item: {
@@ -51,7 +54,34 @@ async function setStarCount(username, quantity) {
                 quantity: quantity
             }
         }
-        return await docClient.put(params).promise();
+        await docClient.put(params).promise();
+        return quantity;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function takeStars(username, quantityString) {
+    try {
+        if (quantityString === "all") {
+            return await setStarCount(username, 0);
+        }
+
+        const quantity = parseInt(quantityString);
+        const params = {
+            TableName: tableName,
+            Key: { id: username },
+            UpdateExpression: "SET quantity = quantity - :num",
+            ConditionExpression: "attribute_exists(quantity) AND quantity > :min",
+            ExpressionAttributeValues: { 
+                ":min": 0,
+                ":num": quantity 
+            },
+            ReturnValues: "ALL_NEW"
+        }
+
+        const result = await docClient.update(params).promise();
+        return result.Attributes.quantity;
     } catch (error) {
         console.error(error);
     }
@@ -61,4 +91,5 @@ module.exports = {
     getUserStarCount,
     giveStars,
     setStarCount,
+    takeStars
 }
