@@ -23,8 +23,9 @@ logger.level = 'debug';
 
 // Protect some functions
 const zeserothId = '257311791099412491';
+const azuId = '187077881749307392';
 const myId = '228727476589690881';
-const permittedUsers = [myId, zeserothId];
+const permittedUsers = [myId, azuId, zeserothId];
 
 bot.on('messageCreate', message => {
 
