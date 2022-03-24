@@ -6,8 +6,9 @@
     "author": "Mardoosa",
     "dependencies": {
         "aws-sdk": "^2.1095.0",
-        "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
+        "discord.js": "^13.6.0",
         "dotenv": "^16.0.0",
+        "nodemon": "^2.0.15",
         "winston": "^3.6.0"
     },
     "scripts": {

@@ -24,3 +24,8 @@ Discord bot
 
 *N* is optional and default to 5.
 
+
+## Todo
+
+- Allow delete user
+- Use serverid to partition user's.
