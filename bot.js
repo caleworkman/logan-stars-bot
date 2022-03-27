@@ -29,6 +29,8 @@ const permittedUsers = [myId, azuId, zeserothId];
 
 bot.on('messageCreate', message => {
 
+    console.log('env:', process.env.NODE_ENV)
+
     // Our bot needs to know if it will execute a command
     // It will listen for messages that will start with `!stars`
 

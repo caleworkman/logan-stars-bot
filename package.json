@@ -12,8 +12,8 @@
         "winston": "^3.6.0"
     },
     "scripts": {
-        "start": "node bot.js",
-        "dev": "nodemon bot.js",
+        "start": "set NODE_ENV=prod && node bot.js",
+        "dev": "set NODE_ENV=dev && nodemon bot.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     }
 }
