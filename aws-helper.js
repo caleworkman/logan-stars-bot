@@ -103,7 +103,6 @@ async function takeStars(user, guildId, numStars) {
             Key: { 
                 id: user.id, 
                 guildId: guildId,
-                name: user.username 
             },
             UpdateExpression: "SET quantity = quantity - :num, username = :username",
             ConditionExpression: "attribute_exists(quantity) AND quantity > :min",

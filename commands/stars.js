@@ -1,10 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
-const { getLeaderboard, getUserStarCount, giveStars, setStarCount, takeStars } = require('../aws-helper.js');
+const { getLeaderboard, getUserStarCount, giveStars, takeStars } = require('../aws-helper.js');
 const { makeUserString } = require('../util.js');
-
-const guildId = '953894755450908692';
-
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -46,29 +43,42 @@ module.exports = {
 	async execute(interaction) {
 
 		const subcommand = interaction.options.getSubcommand();
+		const guildId = interaction.guildId
+		const user = interaction.options.getUser('user') ?? interaction.user;
 
-		// CHECK
-		if (subcommand === 'check') {
-			const user = interaction.options.getUser('user') ?? interaction.user;
-			getUserStarCount(user, guildId).then(
-				numStars => interaction.reply(makeUserString(user.username, numStars))
-			);
+		switch(subcommand) {
+			
+			case "check":
+				getUserStarCount(user, guildId).then(
+					numStars => interaction.reply(makeUserString(user.username, numStars))
+				);
+				break;
 
-		// GIVE	
-		} else if (subcommand === 'give') {
-			const user = interaction.options.getUser('user') ?? interaction.user;
-			const numStars = interaction.options.getInteger('number') ?? 1;
-			giveStars(user, guildId, numStars).then(
-				numStars => interaction.reply(makeUserString(user.username, numStars))
-			);
+			case "give":
+				const numStarsToGive = interaction.options.getInteger('number') ?? 1;
+				giveStars(user, guildId, numStarsToGive).then(
+					numStars => interaction.reply(makeUserString(user.username, numStars))
+				);
+				break;
 
-		// TAKE	
-		} else if (subcommand === 'take') {
-			const user = interaction.options.getUser('user') ?? interaction.user;
-			const numStars = interaction.options.getInteger('number') ?? 1;
-			takeStars(user, guildId, numStars).then(
-				numStars => interaction.reply(makeUserString(user.username, numStars))
-			);
+			case "take":
+				const numStarsToTake = interaction.options.getInteger('number') ?? 1;
+				takeStars(user, guildId, numStarsToTake).then(
+					numStars => interaction.reply(makeUserString(user.username, numStars))
+				);
+				break;
+
+			case "loserboard":
+			case "leaderboard":
+				const numUsers = interaction.options.getInteger('number') ?? 3;
+				getLeaderboard(numUsers, subcommand === 'loserboard').then(
+                    users => {
+                        const userStrings = users.map(u => makeUserString(u.username, u.quantity));
+                        interaction.reply(userStrings.join("\n"));
+                    }
+                );
+                break;
 		}
+
 	}
 };
