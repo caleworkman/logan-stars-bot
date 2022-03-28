@@ -10,7 +10,8 @@ AWS.config.update({
 // Create the service used to connect to DynamoDB
 const docClient = new AWS.DynamoDB.DocumentClient();
 
-const tableName = (process.env.NODE_ENV == "prod") ? "logan-stars-bot" : "discord-stars-dev";
+// prod or dev
+const tableName = (process.env.NODE_ENV == "prod") ? "discord-stars-prod" : "discord-stars-dev";
 
 async function getLeaderboard(numString, isLoserboard=False) {
     try {
