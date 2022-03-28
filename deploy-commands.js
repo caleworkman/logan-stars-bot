@@ -4,7 +4,11 @@ const fs = require('node:fs');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 
-const guildId = '953894755450908692';
+
+const titanSlayersId = '297520307038584832'
+const tcpId = '953894755450908692'
+
+const guildId = titanSlayersId;
 const clientId = process.env.DISCORD_CLIENT_ID;
 const token = process.env.DISCORD_BOT_TOKEN;
 
