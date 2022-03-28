@@ -46,6 +46,8 @@ module.exports = {
 		const guildId = interaction.guildId
 		const user = interaction.options.getUser('user') ?? interaction.user;
 
+		const hasPermission = interaction.member.roles.cache.some(role => role.name.toLowerCase() === 'admin');
+
 		switch(subcommand) {
 			
 			case "check":
@@ -55,6 +57,7 @@ module.exports = {
 				break;
 
 			case "give":
+				if (!hasPermission) break;
 				const numStarsToGive = interaction.options.getInteger('number') ?? 1;
 				giveStars(user, guildId, numStarsToGive).then(
 					numStars => interaction.reply(makeUserString(user.username, numStars))
@@ -62,6 +65,7 @@ module.exports = {
 				break;
 
 			case "take":
+				if (!hasPermission) break;
 				const numStarsToTake = interaction.options.getInteger('number') ?? 1;
 				takeStars(user, guildId, numStarsToTake).then(
 					numStars => interaction.reply(makeUserString(user.username, numStars))
