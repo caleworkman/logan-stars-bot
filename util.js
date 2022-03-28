@@ -11,6 +11,9 @@ function pluralize(word, quantity) {
 
 // Return an emoji string of stars
 function repeatStars(num) {
+
+    if (!num || (num <= 0)) return "";
+
     const star = "\:star:";
     const star_10 = "\:star2:";
     const star_100 = "\:dizzy:";

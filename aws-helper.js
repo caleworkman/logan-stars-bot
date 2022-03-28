@@ -32,76 +32,85 @@ async function getLeaderboard(numString, isLoserboard=False) {
     }
 }
 
-async function getUserStarCount(username) {
+async function getUserStarCount(user, guildId) {
     try {
         const params = {
             TableName: tableName,
-            Key: { id: username }
+            Key: { 
+                id: user.id, 
+                guildId: guildId
+            },
         }
 
         var result = await docClient.get(params).promise();
 
         if (Object.keys(result).length === 0) {
-            // Username does not exist in DB
-            return setStarCount(username, 3);
+            // User does not exist in DB
+            return setStarCount(user, guildId, 3);
         }
 
         return result.Item.quantity;
     } catch (error) {
-        return handleError(error, username, 0);
+        return error;
     }
 }
 
-async function giveStars(username, quantityString=1) {
+async function giveStars(user, guildId, numStars) {
     try {
-        const quantity = parseInt(quantityString);
         const params = {
             TableName: tableName,
-            Key: { id: username },
-            UpdateExpression: "SET quantity = quantity + :num",
+            Key: { 
+                id: user.id, 
+                guildId: guildId,
+            },
+            UpdateExpression: "SET quantity = quantity + :num, username = :username",
             ConditionExpression: "attribute_exists(quantity)",
-            ExpressionAttributeValues: { ":num": quantity },
+            ExpressionAttributeValues: { 
+                ":num": numStars,
+                ":username": user.username,
+            },
             ReturnValues: "ALL_NEW"
         }
         const result = await docClient.update(params).promise();
         return result.Attributes.quantity;
     } catch (error) {
-        return handleError(error, username, parseInt(quantityString));
+        return handleError(error, user, guildId, numStars);
     }
 }
 
-async function setStarCount(username, quantityString) {
+async function setStarCount(user, guildId, numStars=3) {
     try {
-        const quantity = parseInt(quantityString);
         const params = {
             TableName: tableName,
             Item: {
-                id: username,
-                quantity: quantity
+                id: user.id,
+                guildId: guildId,
+                username: user.username, 
+                quantity: numStars
             }
         }
         await docClient.put(params).promise();
-        return quantity;
+        return numStars;
     } catch (error) {
         console.log(error);
     }
 }
 
-async function takeStars(username, quantityString=1) {
+async function takeStars(user, guildId, numStars) {
     try {
-        if (quantityString === "all") {
-            return await setStarCount(username, 0);
-        }
-
-        const quantity = parseInt(quantityString);
         const params = {
             TableName: tableName,
-            Key: { id: username },
-            UpdateExpression: "SET quantity = quantity - :num",
+            Key: { 
+                id: user.id, 
+                guildId: guildId,
+                name: user.username 
+            },
+            UpdateExpression: "SET quantity = quantity - :num, username = :username",
             ConditionExpression: "attribute_exists(quantity) AND quantity > :min",
             ExpressionAttributeValues: { 
-                ":min": 0,
-                ":num": quantity 
+                ":min": numStars,
+                ":num": numStars,
+                ":username": user.username
             },
             ReturnValues: "ALL_NEW"
         }
@@ -109,14 +118,15 @@ async function takeStars(username, quantityString=1) {
         const result = await docClient.update(params).promise();
         return result.Attributes.quantity;
     } catch (error) {
-        return handleError(error, username, 0);
+        // Also sets to 0 if condition expression is invalid (trying to take too many)
+        return handleError(error, user, guildId, 0);
     }
 }
 
-function handleError(error, username, quantity) {
+function handleError(error, user, guildId, quantity) {
     if (error.code === "ConditionalCheckFailedException") {
-        // assume the username doesn't exist in the database
-        return setStarCount(username, quantity);
+        // assume the user doesn't exist in the database
+        return setStarCount(user, guildId, quantity);
     } else {
         console.error(error)
     }
