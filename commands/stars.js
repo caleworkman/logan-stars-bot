@@ -43,7 +43,7 @@ module.exports = {
 	async execute(interaction) {
 
 		const subcommand = interaction.options.getSubcommand();
-		const guildId = interaction.guildId
+		const guildId = interaction.guildId;
 		const user = interaction.options.getUser('user') ?? interaction.user;
 
 		const hasPermission = interaction.member.roles.cache.some(role => role.name.toLowerCase() === 'admin');
